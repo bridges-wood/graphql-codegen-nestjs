@@ -1,0 +1,10 @@
+{
+  "name": "@bridges-wood/graphql-codegen-nestjs",
+  "version": "1.0.0",
+  "description": "GraphQL Code Generator plugin for generating NestJS compatible types",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT"
+}
