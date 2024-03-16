@@ -183,7 +183,7 @@ export class NestVisitor<
     if (isGraphQLType) {
       declarationBlock = this.typescriptVisitor.getObjectTypeDeclarationBlock(node, originalNode);
     } else {
-      declarationBlock = this.typescriptVisitor.getObjectTypeDeclarationBlock(node, originalNode);
+      declarationBlock = this.getObjectTypeDeclarationBlock(node, originalNode);
 
       // Add decorator
       const interfaces = originalNode.interfaces?.map(i => this.convertName(i)) || [];
@@ -286,7 +286,6 @@ export class NestVisitor<
   }
 
   parseType(type: TypeNode | string): Type {
-    console.log('parseType', type)
     if (typeof type === 'string') {
       const isNullable = !!type.match(MAYBE_REGEX);
       const nonNullableType = type.replace(MAYBE_REGEX, '$1');
@@ -357,9 +356,7 @@ export class NestVisitor<
     }
 
     const fieldDecorator = this.config.decoratorName.field;
-    console.log('FieldDefinition', node)
     let typeString = node.type as unknown as string;
-    console.log('FieldDefinition', typeString)
     const type = this.parseType(typeString);
     const decoratorOptions = this.getBaseDecoratorOptions(node);
 
