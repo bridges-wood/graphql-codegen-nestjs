@@ -1,26 +1,21 @@
-const { resolve } = require('path');
-const { pathsToModuleNameMapper } = require('ts-jest');
-
+import { resolve } from 'path';
 const ROOT_DIR = process.cwd();
-const TS_CONFIG = require(`${ROOT_DIR}/tsconfig.json`);
-const tsconfig = require(TS_CONFIG);
 const CI = !!process.env.CI;
 
-module.exports = {
-  transform: { '^.+\\.tsx$': 'babel-jest' },
+export default {
+  transform: { '^.+\\.tsx?$': 'babel-jest' },
   testEnvironment: 'node',
   rootDir: ROOT_DIR,
   restoreMocks: true,
   reporters: ['default'],
-  modulePathIgnorePatterns: ['dist'],
-  moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
-    prefix: `${ROOT_DIR}/`,
-  }),
+  modulePathIgnorePatterns: ['dist', '.bob'],
   cacheDirectory: resolve(ROOT_DIR, `${CI ? '' : 'node_modules/'}.cache/jest`),
+  setupFiles: [`${ROOT_DIR}/dev-test/setup.js`],
   collectCoverage: true,
   testTimeout: 20000,
+  resolver: './node_modules/bob-the-bundler/jest-resolver.cjs',
   snapshotFormat: {
     escapeString: false,
     printBasicPrototype: false,
-  }
+  },
 }

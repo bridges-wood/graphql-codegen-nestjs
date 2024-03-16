@@ -3,6 +3,7 @@
     "incremental": true,
     "baseUrl": ".",
     "outDir": "dist",
+    "rootDir": "src",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
@@ -10,6 +11,7 @@
     "module": "ESNext",
     "target": "ES2018",
     "lib": ["ES6", "ESNext", "ES2015", "DOM"],
+    "suppressImplicitAnyIndexErrors": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "sourceMap": true,
@@ -19,7 +21,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": ["**/dist", "**/temp"]
