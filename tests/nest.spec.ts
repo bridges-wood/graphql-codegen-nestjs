@@ -700,27 +700,27 @@ describe('nest', () => {
     const result = await plugin(schema, [], {}, { outputFile: '' });
 
     expect(result.content).toBeSimilarStringTo(`
-      @Nest.ObjectType({ description: 'Test type description', implements: ITest })
+      @Nest.ObjectType({ description: \`Test type description\`, implements: ITest })
       export class Test implements ITest {
         __typename?: 'Test';
-        @Nest.Field(type => Nest.ID, { description: 'id field description\\ninside Test class', nullable: true })
+        @Nest.Field(type => Nest.ID, { description: \`id field description\\ninside Test class\`, nullable: true })
         id?: Maybe<Scalars['ID']>;
-        @Nest.Field(type => String, { description: 'mandatoryStr field description' })
+        @Nest.Field(type => String, { description: \`mandatoryStr field description\` })
         mandatoryStr!: Scalars['String'];
       }
     `);
 
     expect(result.content).toBeSimilarStringTo(`
-      @Nest.InterfaceType({ description: 'ITest interface description' })
+      @Nest.InterfaceType({ description: \`ITest interface description\` })
       export interface ITest {
 
-        @Nest.Field(type => Nest.ID, { description: 'id field description\\ninside ITest interface', nullable: true })
+        @Nest.Field(type => Nest.ID, { description: \`id field description\\ninside ITest interface\`, nullable: true })
         id?: Maybe<Scalars['ID']>;
       }
     `);
 
     expect(result.content).toBeSimilarStringTo(`
-      @Nest.InputType({ description: 'TestInput input description' })
+      @Nest.InputType({ description: \`TestInput input description\` })
       export class TestInput {
 
         @Nest.Field(type => Nest.ID, { nullable: true })
@@ -880,7 +880,7 @@ describe('nest', () => {
     expect(result.content).toBeSimilarStringTo(` @Nest.ArgsType()
        export class QueryQueryArgs {
 
-         @Nest.Field(type => Nest.ID, { description: 'Mandatory id description' })
+         @Nest.Field(type => Nest.ID, { description: \`Mandatory id description\` })
          mandatoryId!: Scalars['ID'];
 
          @Nest.Field(type => Nest.ID, { nullable: true })
@@ -905,7 +905,7 @@ describe('nest', () => {
     expect(result.content).toBeSimilarStringTo(` @Nest.ArgsType()
        export class QueryQueryArgs {
 
-         @Nest.Field(type => Nest.ID, { description: 'Description with apostrophe\'s' })
+         @Nest.Field(type => Nest.ID, { description: \`Description with apostrophe's\` })
          namedId!: Scalars['ID'];
        };`);
   });

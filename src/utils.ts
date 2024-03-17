@@ -3,12 +3,10 @@ import { DecoratorOptions, Type } from './types.js';
 export const isDefinitionInterface = definition => definition.includes('@Nest.InterfaceType()');
 
 export const escapeString = (str: string) =>
-  "'" +
+  "`" +
   String(str || '')
-    .replace(/\\/g, '\\\\')
-    // eslint-disable-next-line no-useless-escape
-    .replace(/'/g, "'") +
-  "'";
+    .replace(/\\/g, '\\\\') +
+  "`";
 
 export const formatDecoratorOptions = (options: DecoratorOptions, isFirstArgument = true) => {
   if (!Object.keys(options).length) {
