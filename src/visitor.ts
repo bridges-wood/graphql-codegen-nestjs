@@ -3,6 +3,7 @@ import {
   TypeScriptOperationVariablesToObject,
   TypeScriptPluginParsedConfig,
 } from '@graphql-codegen/typescript';
+import { DeclarationBlock, getConfigValue, indent } from '@graphql-codegen/visitor-plugin-common';
 import autoBind from 'auto-bind';
 import {
   EnumTypeDefinitionNode,
@@ -35,7 +36,6 @@ import {
   formatDecoratorOptions,
   getNestNullableValue,
 } from './utils.js';
-import { getConfigValue, DeclarationBlock, indent } from '@graphql-codegen/visitor-plugin-common';
 
 export interface NestPluginParsedConfig extends TypeScriptPluginParsedConfig {
   disableDescriptions: boolean;
@@ -62,7 +62,7 @@ export class NestVisitor<
       immutableTypes: getConfigValue(pluginConfig.immutableTypes, false),
       declarationKind: {
         type: 'class',
-        interface: 'abstract class',
+        interface: 'interface',
         arguments: 'class',
         input: 'class',
         scalar: 'type',

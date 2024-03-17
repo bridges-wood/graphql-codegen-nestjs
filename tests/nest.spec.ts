@@ -138,7 +138,7 @@ describe('nest', () => {
 
     expect(result.content).toBeSimilarStringTo(`
       @Nest.ObjectType({ implements: ITest })
-      export class Test extends ITest {
+      export class Test implements ITest {
         __typename?: 'Test';
         @Nest.Field(type => Nest.ID, { nullable: true })
         id?: Maybe<Scalars['ID']>;
@@ -149,12 +149,61 @@ describe('nest', () => {
 
     expect(result.content).toBeSimilarStringTo(`
       @Nest.InterfaceType()
-      export abstract class ITest {
+      export interface ITest {
 
         @Nest.Field(type => Nest.ID, { nullable: true })
         id?: Maybe<Scalars['ID']>;
       }
     `);
+  });
+
+  it('should generate Nest classes implementing multiple Nest interfaces for object types', async () => {
+    const schema = buildSchema(/* GraphQL */ `
+      type Test implements ITestA & ITestB {
+        id: ID
+        mandatoryStr: String!
+        str: String
+      }
+      interface ITestA {
+        id: ID
+      }
+      interface ITestB {
+        str: String
+      }
+    `);
+
+    const result = await plugin(schema, [], {}, { outputFile: '' });
+
+    expect(result.content).toBeSimilarStringTo(`
+      @Nest.ObjectType({ implements: [ITestA, ITestB] })
+      export class Test implements ITestA, ITestB {
+        __typename?: 'Test';
+        @Nest.Field(type => Nest.ID, { nullable: true })
+        id?: Maybe<Scalars['ID']>;
+        @Nest.Field(type => String)
+        mandatoryStr!: Scalars['String'];
+        @Nest.Field(type => String, { nullable: true })
+        str?: Maybe<Scalars['String']>;
+      }
+    `);
+
+    expect(result.content).toBeSimilarStringTo(`
+      @Nest.InterfaceType()
+      export interface ITestA {
+
+        @Nest.Field(type => Nest.ID, { nullable: true })
+        id?: Maybe<Scalars['ID']>;
+      }
+    `);
+
+    expect(result.content).toBeSimilarStringTo(`
+    @Nest.InterfaceType()
+    export interface ITestB {
+
+      @Nest.Field(type => String, { nullable: true })
+      str?: Maybe<Scalars['String']>;
+    }
+  `);
   });
 
   it('should generate Nest classes for input types', async () => {
@@ -338,7 +387,7 @@ describe('nest', () => {
       `);
     expect(result.content).toBeSimilarStringTo(`
         @Nest.FooBar()
-        export abstract class ITest {
+        export interface ITest {
 
           @Nest.Bar(type => Nest.ID, { nullable: true })
           id?: Maybe<Scalars['ID']>;
@@ -652,7 +701,7 @@ describe('nest', () => {
 
     expect(result.content).toBeSimilarStringTo(`
       @Nest.ObjectType({ description: 'Test type description', implements: ITest })
-      export class Test extends ITest {
+      export class Test implements ITest {
         __typename?: 'Test';
         @Nest.Field(type => Nest.ID, { description: 'id field description\\ninside Test class', nullable: true })
         id?: Maybe<Scalars['ID']>;
@@ -663,7 +712,7 @@ describe('nest', () => {
 
     expect(result.content).toBeSimilarStringTo(`
       @Nest.InterfaceType({ description: 'ITest interface description' })
-      export abstract class ITest {
+      export interface ITest {
 
         @Nest.Field(type => Nest.ID, { description: 'id field description\\ninside ITest interface', nullable: true })
         id?: Maybe<Scalars['ID']>;
@@ -754,7 +803,7 @@ describe('nest', () => {
     expect(result.content).toBeSimilarStringTo(
       `
       @Nest.InterfaceType()
-      export abstract class INestInterfaceType {
+      export interface INestInterfaceType {
         @Nest.Field(type => Nest.ID, { nullable: true })
         id?: Maybe<Scalars['ID']>;
       }`,
