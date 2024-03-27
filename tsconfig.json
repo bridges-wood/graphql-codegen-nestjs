@@ -11,7 +11,6 @@
     "module": "ESNext",
     "target": "ES2018",
     "lib": ["ES6", "ESNext", "ES2015", "DOM"],
-    "suppressImplicitAnyIndexErrors": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "sourceMap": true,
