@@ -909,4 +909,82 @@ describe('nest', () => {
          namedId!: Scalars['ID'];
        };`);
   });
+
+  describe('Directives', () => {
+
+  it('adds custom directive decorators', async () => {
+    const schema = buildSchema(/* GraphQL */ `
+      directive @custom on FIELD_DEFINITION
+
+      type A {
+        id: ID! @custom
+      }
+
+      type Query {
+        a: A
+      }
+    `);
+
+    const result = await plugin(schema, [], {}, { outputFile: '' });
+
+    expect(result.content).toBeSimilarStringTo(`
+      @Nest.Directive('@custom')
+      id!: Scalars['ID'];
+      `);
+  });
+
+  it('adds custom directive decorators with arguments', async () => {
+    const schema = buildSchema(/* GraphQL */ `
+    directive @key(selectionSet: String!) on OBJECT
+
+      type A @key(selectionSet: "{ id }") {
+        id: ID!
+      }
+
+      type Query {
+        a: A
+      }
+    `);
+
+    const result = await plugin(schema, [], {}, { outputFile: '' });
+
+    expect(result.content).toBeSimilarStringTo(`
+      @Nest.Directive('@key(selectionSet: "{ id }")')
+      export class A {
+        __typename?: 'A';
+
+        @Nest.Field(type => Nest.ID)
+        id!: Scalars['ID'];
+      };
+      `);
+  });
+
+  it('adds multiple custom directive decorators', async () => {
+    const schema = buildSchema(/* GraphQL */ `
+    directive @key(selectionSet: String!) on OBJECT
+    directive @canonical on OBJECT | INTERFACE | INPUT_OBJECT | UNION | ENUM | SCALAR | FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+      type A @key(selectionSet: "{ id }") @canonical {
+        id: ID!
+      }
+
+      type Query {
+        a: A
+      }
+    `);
+
+    const result = await plugin(schema, [], {}, { outputFile: '' });
+
+    expect(result.content).toBeSimilarStringTo(`
+      @Nest.Directive('@key(selectionSet: "{ id }")')
+      @Nest.Directive('@canonical')
+      export class A {
+        __typename?: 'A';
+        
+        @Nest.Field(type => Nest.ID)
+        id!: Scalars['ID'];
+      };
+      `);
+  });
+});
 });

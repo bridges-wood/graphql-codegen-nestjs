@@ -34,6 +34,7 @@ import {
   escapeString,
   fixDecorator,
   formatDecoratorOptions,
+  formatDirective,
   getNestNullableValue,
 } from './utils.js';
 
@@ -178,7 +179,7 @@ export class NestVisitor<
     const originalNode = parent[key] as ObjectTypeDefinitionNode;
 
     const decoratorOptions = this.getBaseDecoratorOptions(originalNode);
-
+    
     let declarationBlock: DeclarationBlock;
     if (isGraphQLType) {
       declarationBlock = this.typescriptVisitor.getObjectTypeDeclarationBlock(node, originalNode);
@@ -194,8 +195,9 @@ export class NestVisitor<
       }
 
       declarationBlock = declarationBlock.withDecorator(
-        `@${NEST_PREFIX}.${typeDecorator}(${formatDecoratorOptions(decoratorOptions)})`,
-      );
+        `@${NEST_PREFIX}.${typeDecorator}(${formatDecoratorOptions(decoratorOptions)})` +
+        node.directives.map(d => '\n' + indent(formatDirective(d))).join(''),
+      )
     }
 
     // Remove comment added by typescript plugin
@@ -214,7 +216,8 @@ export class NestVisitor<
     const typeDecorator = this.config.decoratorName.input;
     const decoratorOptions = this.getBaseDecoratorOptions(node);
     const declarationBlock = this.getInputObjectDeclarationBlock(node).withDecorator(
-      `@${NEST_PREFIX}.${typeDecorator}(${formatDecoratorOptions(decoratorOptions)})`,
+      `@${NEST_PREFIX}.${typeDecorator}(${formatDecoratorOptions(decoratorOptions)})` + +
+      node.directives.map(d => '\n' + indent(formatDirective(d))).join(''),
     );
 
     return declarationBlock.string;
@@ -372,6 +375,7 @@ export class NestVisitor<
           type.isArray ? `[${type.type}]` : type.type
         }${formatDecoratorOptions(decoratorOptions, false)})`,
       ) +
+      node.directives.map(d => '\n' + indent(formatDirective(d))).join('') +
       '\n';
 
     typeString = fixDecorator(type, typeString);
@@ -418,6 +422,7 @@ export class NestVisitor<
           type.isArray ? `[${nestType}]` : nestType
         }${formatDecoratorOptions(decoratorOptions, false)})`,
       ) +
+      node.directives.map(d => '\n' + indent(formatDirective(d))).join('') + 
       '\n';
 
     const nameString = node.name.kind ? node.name.value : node.name;

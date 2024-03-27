@@ -1,3 +1,5 @@
+import { ConstDirectiveNode } from 'graphql';
+import { NEST_PREFIX } from './constants.js';
 import { DecoratorOptions, Type } from './types.js';
 
 export const isDefinitionInterface = definition => definition.includes('@Nest.InterfaceType()');
@@ -22,6 +24,15 @@ export const formatDecoratorOptions = (options: DecoratorOptions, isFirstArgumen
       ' }')
   );
 };
+
+export const formatDirective = (directive: ConstDirectiveNode) => {
+  return (
+    `@${NEST_PREFIX}.Directive('` +
+    `@${directive.name}` + (directive.arguments.length === 0 ? '' : `(${directive.arguments.map(arg => `${arg.name}: "${arg.value}"`).join(', ')})`) +
+    `')`
+  );
+
+}
 
 export const buildTypeString = (type: Type): string => {
   if (!type.isArray && !type.isScalar && !type.isNullable) {
