@@ -1,6 +1,6 @@
 {
   "name": "@bridges-wood/graphql-codegen-nestjs",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "description": "GraphQL Code Generator plugin for generating NestJS compatible types",
   "repository": {
