@@ -196,7 +196,7 @@ export class NestVisitor<
 
       declarationBlock = declarationBlock.withDecorator(
         `@${NEST_PREFIX}.${typeDecorator}(${formatDecoratorOptions(decoratorOptions)})` +
-        node.directives.map(d => '\n' + indent(formatDirective(d))).join(''),
+        node.directives?.map(d => '\n' + indent(formatDirective(d))).join(''),
       )
     }
 
@@ -216,8 +216,8 @@ export class NestVisitor<
     const typeDecorator = this.config.decoratorName.input;
     const decoratorOptions = this.getBaseDecoratorOptions(node);
     const declarationBlock = this.getInputObjectDeclarationBlock(node).withDecorator(
-      `@${NEST_PREFIX}.${typeDecorator}(${formatDecoratorOptions(decoratorOptions)})` + +
-      node.directives.map(d => '\n' + indent(formatDirective(d))).join(''),
+      `@${NEST_PREFIX}.${typeDecorator}(${formatDecoratorOptions(decoratorOptions)})` +
+      node.directives?.map(d => '\n' + indent(formatDirective(d))).join(''),
     );
 
     return declarationBlock.string;
@@ -375,7 +375,7 @@ export class NestVisitor<
           type.isArray ? `[${type.type}]` : type.type
         }${formatDecoratorOptions(decoratorOptions, false)})`,
       ) +
-      node.directives.map(d => '\n' + indent(formatDirective(d))).join('') +
+      node.directives?.map(d => '\n' + indent(formatDirective(d))).join('') +
       '\n';
 
     typeString = fixDecorator(type, typeString);
